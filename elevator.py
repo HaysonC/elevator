@@ -6,9 +6,15 @@ from elevatorConstants import DEFAULT_ELEVATOR_CAPACITY, UNLOADING_TIME, DEFAULT
 
 
 class Elevator(set[Passenger]):
-    def __init__(self, capacity: int = DEFAULT_ELEVATOR_CAPACITY, 
-    max_floor: int = DEFAULT_ELEVATOR_FLOOR,
-    ) -> None:
+    def __init__(self,
+                 capacity: int = DEFAULT_ELEVATOR_CAPACITY,
+                 max_floor: int = DEFAULT_ELEVATOR_FLOOR) -> None:
+        """
+        Initialize the elevator
+
+        :param capacity: The capacity of the elevator
+        :param max_floor: The maximum floor number
+        """
         super().__init__()
         self.capacity: int = capacity
         self.elevator_direction: str = "idle"
@@ -85,7 +91,6 @@ class Elevator(set[Passenger]):
             self.current_floor -= 1
         doContinue = True
 
-
         for passenger in list(self):
             if passenger.destination == self.current_floor:
                 self.remove(passenger)
@@ -94,12 +99,3 @@ class Elevator(set[Passenger]):
         if not doContinue:
             self.holdingTime = UNLOADING_TIME
         return waitTime
-
-
-
-
-
-
-
-
-

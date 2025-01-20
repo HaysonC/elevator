@@ -1,5 +1,3 @@
-# Upon request to obtain, it generates a passenger from certain rules. Return the passenger objects for the
-# floor to register.
 from elevatorConstants import DEFAULT_BUSY_MULTIPLIER
 from passenger import Passenger
 
