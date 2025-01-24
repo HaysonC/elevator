@@ -159,12 +159,14 @@ def run_neat():
         temp_files = []
         for file in os.listdir():
             if file.startswith("temp"):
-                temp_files.append(file)
-        temp_files.sort(key=lambda x: int(b if (b := x.split("temp")[1].split(".")[0] != "") else 0))
+                temp_files.append(file.replace("temp", ""))
+        temp_files = sorted(temp_files, key=lambda x: int(x if x.isnumeric() else -1))
         if len(temp_files) == 0:
             print("No temp files found")
             return
+        print("Found temp files", temp_files)
         last_temp_file = temp_files[-1]
+        last_temp_file = "temp" + last_temp_file
         print("Restoring from", last_temp_file)
         pop = Checkpointer.restore_checkpoint(last_temp_file)
         population = pop
