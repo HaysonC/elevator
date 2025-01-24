@@ -31,7 +31,7 @@ The following is an example of running the NEAT algorithm to optimize elevator c
 
 The fitness is calculated based on the total wait time for passengers, with lower values indicating better performance. The best genome is saved to a file for evaluation and testing.
 $f(\theta, c) = \sum_{i=1}^{n} (w_i)$
-![Fitness over Gens](fitness.png)
+![Fitness over Gens](Fitness.png)
 
 ```
 
