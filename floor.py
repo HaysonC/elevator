@@ -27,6 +27,7 @@ class Floors(object):
         self._elevators: list[Elevator] = [Elevator(elevatorCapacity, floorCount) for _ in range(elevatorCount)]
         self.takeIns: list[bool] = [False for _ in range(elevatorCount)]
         self.floorRequests: list[tuple[bool, bool]] = [(False, False) for _ in range(floorCount)]
+        self.totalWaitTime: int = 0
         self.updateFloor(0)
 
         if passengerGenerator is None:
@@ -34,7 +35,7 @@ class Floors(object):
         else:
             self.passengerGenerator = passengerGenerator
 
-    def setDropOffs(self, takeIns: list[bool]) -> None:
+    def setTakeIns(self, takeIns: list[bool]) -> None:
         """
         Set the take in status of the elevators
 
@@ -86,17 +87,15 @@ class Floors(object):
         """
         return [elevator.get_internal_requests() for elevator in self._elevators]
 
-    def updateFloor(self, wait: int = 1) -> int:
+    def updateFloor(self, wait: int = 1):
         """
         Update the floor requests for each floor and wait time of passengers
 
         :return: total wait time of passengers on the floor
         """
-        waitTime = 0
         for floor in self._floors:
             for passenger in floor:
                 passenger.wait(wait)
-                waitTime += passenger.wait_time
         for i, floor in enumerate(self._floors):
             up = False
             down = False
@@ -108,9 +107,8 @@ class Floors(object):
                 if up and down:
                     break
             self.floorRequests[i] = (up, down)
-        return waitTime
 
-    def next(self) -> int:
+    def next(self, wait = 1) -> int:
         """
         The next time step
 
@@ -129,27 +127,31 @@ class Floors(object):
         :return: int: total wait time of passengers if any is dropped off, else 0
         """
         # generate passengers
-        passengers = self.passengerGenerator.obtain()
+        passengers = self.passengerGenerator.obtain(self.time)
         for passenger in passengers:
             self._floors[passenger.origin].add(passenger)
 
         # elevator take in
         for i, elevator in enumerate(self._elevators):
-            if self.takeIns[i]:
+            if self.takeIns[i] and len(self._floors[elevator.current_floor]) > 0:
                 elevator.add_passengers(self._floors[elevator.current_floor])
 
         # elevator next
-        waitTime = 0
         for elevator in self._elevators:
-            waitTime += elevator.next()
+            elevator.next()
 
         # update floor
-        floor_time = self.updateFloor()
+        self.updateFloor()
 
-        waitTime += floor_time
+        waitTime = 0
+        for floor in self._floors:
+            waitTime += wait * len(floor)
+        for elevator in self._elevators:
+            waitTime += wait * len(elevator)
 
+        self.totalWaitTime += waitTime
         self.time += 1
-        return waitTime
+        return self.totalWaitTime
 
 
 

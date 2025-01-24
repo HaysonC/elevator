@@ -25,6 +25,16 @@ The NEAT configuration is defined in the `neat_config` file. This file includes 
 - **\[DefaultSpeciesSet\]**: Parameters for species management.
 - **\[DefaultStagnation\]**: Parameters for handling stagnation in the population.
 
+## Example Run
+
+The following is an example of running the NEAT algorithm to optimize elevator control. This is trained for 700 generations with a population size of 150.
+
+The fitness is calculated based on the total wait time for passengers, with lower values indicating better performance. The best genome is saved to a file for evaluation and testing.
+$f(\theta, c) = \sum_{i=1}^{n} (w_i)$
+![Fitness over Gens](!fitness.png)
+
+```
+
 ### Example Configuration
 
 ```ini
